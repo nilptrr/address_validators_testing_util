@@ -11,11 +11,13 @@ logger = logging.getLogger("address_validators_testing_util")
 def __get_latest_block_height():
     '''
     Gets the height of latest block from the blockchain explorer.
+
+    SEE https://docs.binance.org/api-reference/dex-api/paths.html
     '''
 
     try:
         url = 'https://dex.binance.org/api/v1/node-info'
-        res = requests.get(url)
+        res = requests.get(url, timeout=1)
         res.raise_for_status()
 
     except (requests.exceptions.HTTPError, requests.exceptions.Timeout) as errht:
@@ -33,11 +35,13 @@ def __get_latest_block_height():
 def __get_address_in_block(block_height):
     '''
     Gets a list of addresses in the block.
+
+    SEE https://docs.binance.org/api-reference/dex-api/block-service.html
     '''
 
     try:
-        url = f"https://dex.binance.org/api/v2/transactions-in-block/{block_height}"
-        res = requests.get(url, timeout=10)
+        url = f"https://api.binance.org/bc/api/v1/blocks/{block_height}/txs"
+        res = requests.get(url, timeout=2)
         res.raise_for_status()
 
     except (requests.exceptions.HTTPError, requests.exceptions.Timeout) as errht:
@@ -49,7 +53,7 @@ def __get_address_in_block(block_height):
 
     else:
         transactions = res.json()
-        for transaction in transactions['tx']:
+        for transaction in transactions['txs']:
             yield transaction['fromAddr']
             yield transaction['toAddr']
 
@@ -78,6 +82,8 @@ def parse_address():
             continue
 
         current_block_height = latest_block_height
+
+        time.sleep(1)               # waiting for information from nodes, Otherwise, the server will return a 404 error
 
         logger.debug(f'Get addresses in the {current_block_height} block height.')
         addresses_in_block = __get_address_in_block(current_block_height)
