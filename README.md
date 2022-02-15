@@ -11,6 +11,8 @@ If an invalid address is returned, the validator potentially reports a false neg
 
 ## Usage
 ```
+git clone https://github.com/null-po1nter/address_validators_testing_util.git
+cd address_validators_testing_util
 poetry install
 poetry run validation_tests
 ```
