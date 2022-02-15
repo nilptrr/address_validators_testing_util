@@ -11,8 +11,14 @@ LOGGING_CONFIG = {
         }
     },
     "handlers": {
-        "logfile": {
+        "console_output": {
             "level": "DEBUG",
+            "formatter": "default",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout"
+        },
+        "logfile": {
+            "level": "INFO",
             "filename": ERROR_LOG_FILENAME,
             "formatter": "default",
             "class": "logging.handlers.RotatingFileHandler",
@@ -29,7 +35,7 @@ LOGGING_CONFIG = {
     "loggers": {
         "address_validators_testing_util": {
             "level": "DEBUG",
-            "handlers": ["logfile", "validation_error"],
+            "handlers": ["console_output", "logfile", "validation_error"],
         }
     },
 }

@@ -19,18 +19,18 @@ def _run_validate(validation_testers, address_queues):
         for (validation_tester, address_queue) in zip(validation_testers, address_queues):
             try:
                 address = address_queue.get()
-                logger.debug(f'{validation_tester}: Get {address} from queue.')
+                logger.info(f'{validation_tester}: Get {address} from queue.')
                 logger.debug(f'{validation_tester}: Queue size: {address_queue.qsize()}')
 
             except queue.Empty:
                 logger.debug(f'{validation_tester}: The queue {address_queue} is empty.')
 
             else:
-                logger.debug(f'{validation_tester}: Passing the {address} to the validator.')
+                logger.info(f'{validation_tester}: Passing the {address} to the validator.')
 
                 try:
                     validation_result = validation_tester.validate_address(address)
-                    logger.debug(f'{validation_tester}: Validation result: {validation_result}')
+                    logger.info(f'{validation_tester}: Validation result: {validation_result}')
 
                 except Exception as e:
                     logger.critical(e, exc_info=True)       # unknown error
@@ -63,7 +63,10 @@ def main():
     If an invalid address is returned, the validator potentially reports a false negative result.
     '''
 
-    supported_symbols = ['bnb', 'btc']
+    supported_symbols = [
+        'bnb',
+        'btc'
+    ]
 
     validation_testers = [ValidatorTester(symbol) for symbol in supported_symbols]
     logger.info(f'Run validation testers: {validation_testers}')
